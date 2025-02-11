@@ -5,13 +5,14 @@ import com.codeDragon35.employee_service.dto.DepartmentDTO;
 import com.codeDragon35.employee_service.dto.EmployeeDTO;
 import com.codeDragon35.employee_service.entity.EmployeeEntity;
 import com.codeDragon35.employee_service.repository.EmployeeRepository;
+import com.codeDragon35.employee_service.service.APIClient;
 import com.codeDragon35.employee_service.service.EmployeeServiceInterface;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
+//import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
+//import org.springframework.web.client.RestTemplate;
+//import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +21,8 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
     private EmployeeRepository employeeRepository;
     private ModelMapper modelMapper;
 //    private RestTemplate restTemplate;
-    private WebClient webClient;
+//    private WebClient webClient;
+    private APIClient apiClient;
 
     @Override
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
@@ -37,9 +39,11 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
     public ApiResponseDTO getEmployee(Long id) {
         EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
         EmployeeDTO  employeeDTO = modelMapper.map(employeeEntity, EmployeeDTO.class);
-        DepartmentDTO departmentDTO = webClient.get()
-                .uri("http://localhost:8080/v1/departments/"+employeeEntity.getDepartmentCode())
-                .retrieve().bodyToMono(DepartmentDTO.class).block();
+        DepartmentDTO departmentDTO = apiClient.getDepartmentByDepartmentCode(employeeEntity.getDepartmentCode());
+//        DepartmentDTO departmentDTO = webClient.get()
+//                .uri("http://localhost:8080/v1/departments/"+employeeEntity.getDepartmentCode())
+//                .retrieve().bodyToMono(DepartmentDTO.class).block();
+
 
 //        ResponseEntity<DepartmentDTO> responseEntity =  restTemplate.getForEntity("http://localhost:8080/v1/departments/"+employeeEntity.getDepartmentCode(), DepartmentDTO.class);
 //        DepartmentDTO departmentDTO = responseEntity.getBody();
