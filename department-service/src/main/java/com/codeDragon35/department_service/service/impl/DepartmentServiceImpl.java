@@ -2,11 +2,13 @@ package com.codeDragon35.department_service.service.impl;
 
 import com.codeDragon35.department_service.dto.DepartmentDTO;
 import com.codeDragon35.department_service.entity.DepartmentEntity;
+import com.codeDragon35.department_service.exception.ResourceNotFoundException;
 import com.codeDragon35.department_service.mapper.DepartmentMapper;
 import com.codeDragon35.department_service.repository.DepartmentRepository;
 import com.codeDragon35.department_service.service.DepartmentServiceInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @AllArgsConstructor
@@ -30,7 +32,9 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
 
     @Override
     public DepartmentDTO getDepartmentByCode(String departmentCode) {
-        DepartmentEntity department =  departmentRepository.findByDepartmentCode(departmentCode);
+        DepartmentEntity department =  departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
+                () -> new ResourceNotFoundException("Department","code",departmentCode)
+        );
 //        return new DepartmentDTO(department.getId(), department.getDepartmentName(),department.getDepartmentDescription(), department.getDepartmentCode());
         return DepartmentMapper.MAPPER.mapToDepartmentDTO(department);
     }
