@@ -1,5 +1,6 @@
 package com.codeDragon35.employee_service.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +10,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeDTO {
-
+public class DepartmentDTO {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
+    private String departmentName;
+    private String departmentDescription;
     private String departmentCode;
 }

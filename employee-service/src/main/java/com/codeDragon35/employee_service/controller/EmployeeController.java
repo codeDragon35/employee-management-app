@@ -1,6 +1,7 @@
 package com.codeDragon35.employee_service.controller;
 
 
+import com.codeDragon35.employee_service.dto.ApiResponseDTO;
 import com.codeDragon35.employee_service.dto.EmployeeDTO;
 import com.codeDragon35.employee_service.service.EmployeeServiceInterface;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,8 @@ public class EmployeeController {
     }
 
     @GetMapping("get/{id}")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id){
-        EmployeeDTO employeeDTO = employeeServiceInterface.getEmployee(id);
-        return new ResponseEntity<>(employeeDTO, HttpStatus.OK);
+    public ResponseEntity<ApiResponseDTO> getEmployeeById(@PathVariable Long id){
+        ApiResponseDTO apiResponseDTO = employeeServiceInterface.getEmployee(id);
+        return new ResponseEntity<>(apiResponseDTO, HttpStatus.OK);
     }
 }

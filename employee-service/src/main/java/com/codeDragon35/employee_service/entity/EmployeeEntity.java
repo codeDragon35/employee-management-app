@@ -21,7 +21,7 @@ public class EmployeeEntity {
     private Long id;
     private String firstName;
     private String lastName;
-
+    private String departmentCode;
     @Column(nullable = false, unique = true)
     private String email;
 
