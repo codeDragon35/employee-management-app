@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @AllArgsConstructor
@@ -18,7 +19,8 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
 
     private EmployeeRepository employeeRepository;
     private ModelMapper modelMapper;
-    private RestTemplate restTemplate;
+//    private RestTemplate restTemplate;
+    private WebClient webClient;
 
     @Override
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
@@ -35,8 +37,12 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
     public ApiResponseDTO getEmployee(Long id) {
         EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
         EmployeeDTO  employeeDTO = modelMapper.map(employeeEntity, EmployeeDTO.class);
-        ResponseEntity<DepartmentDTO> responseEntity =  restTemplate.getForEntity("http://localhost:8080/v1/departments/"+employeeEntity.getDepartmentCode(), DepartmentDTO.class);
-        DepartmentDTO departmentDTO = responseEntity.getBody();
+        DepartmentDTO departmentDTO = webClient.get()
+                .uri("http://localhost:8080/v1/departments/"+employeeEntity.getDepartmentCode())
+                .retrieve().bodyToMono(DepartmentDTO.class).block();
+
+//        ResponseEntity<DepartmentDTO> responseEntity =  restTemplate.getForEntity("http://localhost:8080/v1/departments/"+employeeEntity.getDepartmentCode(), DepartmentDTO.class);
+//        DepartmentDTO departmentDTO = responseEntity.getBody();
 
         ApiResponseDTO apiResponseDTO = new ApiResponseDTO();
         apiResponseDTO.setEmployeeDTO(employeeDTO);
