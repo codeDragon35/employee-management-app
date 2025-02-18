@@ -7,6 +7,7 @@ import com.codeDragon35.employee_service.entity.EmployeeEntity;
 import com.codeDragon35.employee_service.repository.EmployeeRepository;
 import com.codeDragon35.employee_service.service.APIClient;
 import com.codeDragon35.employee_service.service.EmployeeServiceInterface;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 //import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
             return modelMapper.map(savedEmployee, EmployeeDTO.class);
     }
 
+    @CircuitBreaker(name="${spring.application.name}", fallbackMethod = "getDefaultDepartment")
     @Override
     public ApiResponseDTO getEmployee(Long id) {
         EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
@@ -54,4 +56,19 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
 //        return new EmployeeDTO(employeeEntity.getId(),employeeEntity.getFirstName(),employeeEntity.getLastName(),employeeEntity.getEmail());
         return apiResponseDTO;
     }
+
+    public ApiResponseDTO getDefaultDepartment(Long id, Exception e) {
+        EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
+        EmployeeDTO  employeeDTO = modelMapper.map(employeeEntity, EmployeeDTO.class);
+        DepartmentDTO departmentDTO = new DepartmentDTO();
+        departmentDTO.setDepartmentCode("Dept101");
+        departmentDTO.setDepartmentName("Default Department");
+        departmentDTO.setDepartmentDescription("This is the default department for circuit breaker");
+        ApiResponseDTO apiResponseDTO = new ApiResponseDTO();
+        apiResponseDTO.setEmployeeDTO(employeeDTO);
+        apiResponseDTO.setDepartmentDTO(departmentDTO);
+        return apiResponseDTO;
+    }
 }
+
+
